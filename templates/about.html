@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>About Me - FARIZ</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+  <style>
+    .navbar-scrolled {
+      background-color: rgba(0, 0, 0, 0.9);
+      border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+    }
+  </style>
+</head>
+<body class="bg-black text-white flex flex-col min-h-screen">
+
+  <!-- Navbar -->
+  <nav id="navbar" class="fixed top-0 left-0 w-full z-50 transition-all duration-300 ease-in-out">
+    <div class="container mx-auto flex justify-between items-center p-4">
+      <div class="flex items-center space-x-2">
+        <a href="#" class="text-xl font-bold text-white">Crypto DTMF</a>
+      </div>
+      <button id="menu-toggle" class="md:hidden text-white focus:outline-none">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M4 6h16M4 12h16M4 18h16"/>
+        </svg>
+      </button>
+      <ul id="nav-links" class="hidden md:flex space-x-6 text-white">
+        <li><a href="/" class="hover:text-gray-300">Home</a></li>
+        <li><a href="/about" class="hover:text-gray-300">About</a></li>
+        <li><a href="/encryptDecrypt" class="hover:text-gray-300">Encryption & Decryption</a></li>
+      </ul>
+    </div>
+
+    <!-- Mobile Menu -->
+    <div id="mobile-menu" class="hidden md:hidden bg-black bg-opacity-90 p-4">
+      <ul class="text-white">
+        <li class="border-b border-gray-600">
+          <a href="/" class="block py-2 hover:text-gray-300 text-center">Home</a>
+        </li>
+        <li class="border-b border-gray-600">
+          <a href="/about" class="block py-2 hover:text-gray-300 text-center">About</a>
+        </li>
+        <li class="border-b border-gray-600">
+          <a href="/encryptDecrypt" class="block py-2 hover:text-gray-300 text-center">Encryption & Decryption</a>
+        </li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- Content Wrapper with Top Padding -->
+  <main class="pt-24 px-4 pb-12 flex-grow ">
+
+    <div class="max-w-xl w-full rounded-lg overflow-hidden shadow-lg mx-auto"data-aos="fade-left">
+
+      <!-- Top Bar -->
+      <div class="bg-gray-500 px-4 py-2 flex items-center space-x-2 rounded-t-lg">
+        <span class="w-3 h-3 bg-red-500 rounded-full"></span>
+        <span class="w-3 h-3 bg-yellow-400 rounded-full"></span>
+        <span class="w-3 h-3 bg-green-500 rounded-full"></span>
+      </div>
+
+      <!-- Main content -->
+      <div class="bg-[#181C2D] p-6 space-y-6 rounded-b-lg text-white ">
+
+        <!-- About Me -->
+        <div>
+          <h2 class="text-2xl text-purple-500 mb-4 ">About me</h2>
+          <p class="text-lg sm:text-xl md:text-2xl mb-4">
+            Hello! My name is <span class="font-bold">Sanjif</span>, and
+            I am pursuing a diploma in Telecommunications Engineering at Bandung State Polytechnic.
+            I strongly believe that artificial intelligence will bring significant advancements to the world of technology in the future.
+          </p>
+        </div>
+
+        <!-- Spotify Playlist -->
+        <div>
+          <h3 class="text-xl text-purple-500 mb-2">Spotify playlist</h3>
+          <div class="bg-white rounded-md p-2 inline-block">
+            <img src="f01eed85-3626-4454-912e-a2e28212fb26.png" alt="Spotify Code" class="w-48 sm:w-64" />
+          </div>
+        </div>
+
+        <!-- Show More Button -->
+        <div id="showMoreWrapper" class="text-center">
+          <button id="showMoreBtn" class="text-sm text-gray-400 hover:text-purple-500 font-semibold focus:outline-none">
+            Show more
+          </button>
+        </div>
+
+        <!-- Hidden Content -->
+        <div id="extraContent" class="hidden space-y-6">
+
+          <!-- Work Experience -->
+          <div>
+            <h2 class="text-2xl text-purple-500 mb-4">Employment History</h2>
+            <div class="relative border-l-2 border-gray-600 ml-2 pl-6 space-y-10">
+              <div class="relative">
+                <div class="absolute left-[-30px] top-0 w-3 h-3 bg-gray-400 rounded-full"></div>
+                <p class="text-sm text-gray-400">Jun 2024 – Aug 2024</p>
+                <p class="text-lg text-white mb-2 font-semibold"><span class="font-bold">IT Product Development (Intern)</span> – <span class="text-purple-400">PT. Immobi Solusi Prima</span></p>
+                <p class="text-sm sm:text-base md:text-lg">
+                  I was responsible for monitoring the NetView dashboard to determine the performance of the internet provider's pingtest, traceroute, and speedtest. In addition, I processed STO location data using MapInfo Pro software and added new devices to the NetView dashboard through Portainer.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Education -->
+          <div>
+            <h2 class="text-2xl text-purple-500 mb-4 mt-8">Education</h2>
+            <div class="relative border-l-2 border-gray-600 ml-2 pl-6 space-y-10">
+              <div class="relative">
+                <div class="absolute left-[-30px] top-1 w-3 h-3 bg-gray-400 rounded-full"></div>
+                <p class="text-sm text-gray-400">Aug 2022 – Present</p>
+                <p class="text-lg font-semibold text-white">
+                  Telecommunications Engineering – <span class="text-purple-400">Politeknik Negeri Bandung</span>
+                </p>
+              </div>
+              <div class="relative">
+                <div class="absolute left-[-30px] top-1 w-3 h-3 bg-gray-400 rounded-full"></div>
+                <p class="text-sm text-gray-400">Jul 2019 – Jun 2022</p>
+                <p class="text-lg font-semibold text-white">
+                  Science – <span class="text-purple-400">SMAN 21 Bandung</span>
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Show Less Button -->
+          <div class="text-center">
+            <button id="showLessBtn" class="text-sm text-gray-400 hover:text-purple-500 font-semibold focus:outline-none">
+              Show less
+            </button>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <main class="pt-24 px-4 pb-12 flex-grow">
+    <div class="max-w-xl w-full rounded-lg overflow-hidden shadow-lg mx-auto mb-10" data-aos="fade-right">
+        <!-- Top Bar -->
+          <div class="bg-gray-500 px-4 py-2 flex items-center space-x-2 rounded-t-lg">
+            <span class="w-3 h-3 bg-red-500 rounded-full"></span>
+            <span class="w-3 h-3 bg-yellow-400 rounded-full"></span>
+            <span class="w-3 h-3 bg-green-500 rounded-full"></span>
+          </div>
+      
+          <!-- Main content -->
+          <div class="bg-[#181C2D] p-6 space-y-6 rounded-b-lg text-white">
+            <!-- Hobbies / Interests -->
+            <div>
+                <h3 class="text-xl text-purple-500 mb-4">Hobbies / Interests</h3>
+                <div class="space-y-4 text-white text-lg">
+                <div class="flex items-center space-x-4">
+                    <span class="text-3xl">🏀</span>
+                    <span>Basketball</span>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <span class="text-3xl">🎧</span>
+                    <span>Music</span>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <span class="text-3xl">🎮</span>
+                    <span>Gaming</span>
+                </div>
+                </div>
+            </div>
+          </div>  
+      </div>
+  </main>
+  
+
+    
+    <!-- Footer -->
+    <footer class="bg-black text-white border-t text-center p-4">
+        <p>&copy; 2025 Sanjif. All rights reserved.</p>
+      </footer>
+
+  <!-- Scripts -->
+  <script>
+    // Scroll Effect for Navbar
+    window.addEventListener("scroll", function () {
+      const navbar = document.getElementById("navbar");
+      if (window.scrollY > 50) {
+        navbar.classList.add("navbar-scrolled");
+      } else {
+        navbar.classList.remove("navbar-scrolled");
+      }
+    });
+
+    // Show More / Less Toggle
+    const showMoreBtn = document.getElementById('showMoreBtn');
+    const showLessBtn = document.getElementById('showLessBtn');
+    const extraContent = document.getElementById('extraContent');
+    const showMoreWrapper = document.getElementById('showMoreWrapper');
+
+    showMoreBtn.addEventListener('click', () => {
+      extraContent.classList.remove('hidden');
+      showMoreWrapper.classList.add('hidden');
+    });
+
+    showLessBtn.addEventListener('click', () => {
+      extraContent.classList.add('hidden');
+      showMoreWrapper.classList.remove('hidden');
+    });
+
+    // Mobile Menu Toggle
+    const menuToggle = document.getElementById('menu-toggle');
+    const mobileMenu = document.getElementById('mobile-menu');
+
+    menuToggle.addEventListener('click', () => {
+      mobileMenu.classList.toggle('hidden');
+    });
+  </script>
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+  <script>
+    AOS.init({
+      once: false,
+      duration: 1500,
+  
+    });
+  </script>
+</body>
+</html>
