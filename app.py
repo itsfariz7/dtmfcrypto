@@ -1,12 +1,13 @@
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template, request, jsonify, send_from_directory
 import os
 import base64
 import numpy as np
 from scipy.io.wavfile import write
 from pydub import AudioSegment
 from Crypto.Cipher import AES
-from Crypto.Util.Padding import pad, unpad
+from Crypto.Util.Padding import pad
 from Crypto import Random
+from Crypto.Util.Padding import unpad
 
 app = Flask(__name__)
 UPLOAD_FOLDER = "uploads"
@@ -109,23 +110,37 @@ def process():
         write(mixed_path, SAMPLE_RATE, np.int16(mixed * 32767))
 
         return jsonify({
-            "ciphertext": ciphertext_base64,
-            "ascii": ascii_values,
-            "waveforms": {
-                "dtmf": "/static/output/dtmf_only.wav",
-                "carrier": "/static/output/carrier_only.wav",
-                "mixed": "/static/output/mixed_audio.wav"
+             "ciphertext": "...",
+                "ascii": "...",
+                "waveforms": {
+                    "dtmf": "/static/output/dtmf_only.wav",
+                    "carrier": "/static/output/carrier_only.wav",
+                    "mixed": "/static/output/mixed_audio.wav"
+                },
+                "downloads": {
+                    "dtmf": "/static/output/dtmf_only.wav",
+                    "carrier": "/static/output/carrier_only.wav",
+                    "mixed": "/static/output/mixed_audio.wav"
             }
         })
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
+def generate_dtmf_signal(ascii_values, duration=0.2, sample_rate=SAMPLE_RATE):
+    t = np.linspace(0, duration, int(sample_rate * duration), False)
+    signal = np.array([], dtype=np.float32)
+    for digit in ascii_values:
+        f1, f2 = DTMF_FREQUENCIES.get(digit, DEFAULT_FREQUENCY)
+        tone = np.sin(2 * np.pi * f1 * t) + np.sin(2 * np.pi * f2 * t)
+        signal = np.append(signal, tone)
+    return signal * 0.5
 @app.route('/decrypt', methods=["POST"])
 def decrypt():
     try:
         ciphertext_base64 = request.form.get("ciphertext")
         key = request.form.get("key")
+        file = request.files.get("file")  # optional, still accepted but unused
 
         if not ciphertext_base64 or not key:
             return jsonify({"error": "Ciphertext dan kunci harus diisi!"}), 400
@@ -144,16 +159,9 @@ def decrypt():
         return jsonify({"plaintext": plaintext})
     except Exception as e:
         return jsonify({"error": f"Gagal mendekripsi: {str(e)}"}), 500
-
-def generate_dtmf_signal(ascii_values, duration=0.2, sample_rate=SAMPLE_RATE):
-    t = np.linspace(0, duration, int(sample_rate * duration), False)
-    signal = np.array([], dtype=np.float32)
-    for digit in ascii_values:
-        f1, f2 = DTMF_FREQUENCIES.get(digit, DEFAULT_FREQUENCY)
-        tone = np.sin(2 * np.pi * f1 * t) + np.sin(2 * np.pi * f2 * t)
-        signal = np.append(signal, tone)
-    return signal * 0.5
-
+    
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port, debug=False)
+
+

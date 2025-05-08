@@ -103,32 +103,26 @@
 <div class="w-full max-w-4xl mx-auto mt-10 bg-transparent border border-white rounded-lg p-6 space-y-4 px-4">
   <h2 class="text-xl font-bold mb-4 text-center text-white">Decryption</h2>
 
-   <!-- File .wav Enkripsi -->
-<div>
-  <label class="block font-medium text-white">File Enkripsi (.wav):</label>
-  <input type="file" id="dec-audioFile" accept=".wav" class="w-full text-white" />
-</div>
-
-<!-- Tombol Analyze -->
-<button onclick="analyzeFile()" id="btn-analyze" class="w-full border border-white text-white py-2 rounded hover:bg-white hover:text-black transition">Analyze</button>
-
-<!-- Loader -->
-<div id="analyze-loading" class="text-center hidden">
-  <p class="text-white">Analyzing...</p>
-  <div class="w-8 h-8 border-4 border-white border-t-transparent rounded-full animate-spin mx-auto mt-2"></div>
-</div>
-
-<!-- Output dari Analyze -->
-<div id="analyze-result" class="space-y-3 hidden">
+  <!-- Input Ciphertext -->
   <div>
     <label class="block font-medium text-white">Ciphertext:</label>
-    <input type="text" id="dec-ciphertext" class="w-full p-2 border border-white rounded bg-transparent text-white" readonly />
+    <input type="text" id="dec-ciphertext" class="w-full p-2 border border-white rounded bg-transparent text-white placeholder-white" placeholder="Masukkan ciphertext..." />
   </div>
+
+  <!-- Input Kata Kunci -->
   <div>
     <label class="block font-medium text-white">Kata Kunci:</label>
-    <input type="text" id="dec-key" class="w-full p-2 border border-white rounded bg-transparent text-white" readonly />
+    <input type="text" id="dec-key" class="w-full p-2 border border-white rounded bg-transparent text-white placeholder-white" placeholder="Masukkan kata kunci yang digunakan" />
   </div>
-</div>
+
+  <!-- File .wav Enkripsi -->
+  <div>
+    <label class="block font-medium text-white">File Enkripsi (.wav):</label>
+    <input type="file" id="dec-audioFile" accept=".wav" class="w-full text-white" />
+  </div>
+
+  <!-- Tombol Decrypt -->
+  <button onclick="decryptPesan()" class="w-full border border-white text-white py-2 rounded hover:bg-white hover:text-black transition">Decrypt</button>
 
   <!-- Output -->
   <div>
@@ -177,47 +171,6 @@
   }
 
   let wavesurferInstances = {};
-
-  function analyzeFile() {
-  const fileInput = document.getElementById("dec-audioFile");
-  const loading = document.getElementById("analyze-loading");
-  const result = document.getElementById("analyze-result");
-
-  if (!fileInput.files.length) {
-    alert("Pilih file .wav terlebih dahulu.");
-    return;
-  }
-
-  const file = fileInput.files[0];
-  const formData = new FormData();
-  formData.append("encryptedFile", file);
-
-  // Tampilkan animasi loading
-  loading.classList.remove("hidden");
-  result.classList.add("hidden");
-
-  fetch("/analyze", {
-    method: "POST",
-    body: formData
-  })
-  .then(response => response.json())
-  .then(data => {
-    loading.classList.add("hidden");
-
-    if (data.error) {
-      alert("Gagal menganalisis: " + data.error);
-      return;
-    }
-
-    document.getElementById("dec-ciphertext").value = data.ciphertext || "";
-    document.getElementById("dec-key").value = data.key || "";
-    result.classList.remove("hidden");
-  })
-  .catch(error => {
-    loading.classList.add("hidden");
-    alert("Terjadi kesalahan saat analisis: " + error);
-  });
-}
 
   function createWaveform(containerId, audioUrl) {
     // Destroy jika sudah ada sebelumnya
@@ -283,34 +236,34 @@
   })
   .catch(err => alert("Terjadi kesalahan: " + err));
 }
-function decryptPesan() {
+  function decryptPesan() {
   const ciphertext = document.getElementById("dec-ciphertext").value;
   const key = document.getElementById("dec-key").value;
+  const file = document.getElementById("dec-audioFile").files[0];
 
-  if (!ciphertext || !key) {
-    alert("Ciphertext dan kunci harus tersedia.");
+  if (!ciphertext || !key || !file) {
+    alert("Harap lengkapi ciphertext, kunci, dan pilih file audio.");
     return;
   }
 
   const formData = new FormData();
   formData.append("ciphertext", ciphertext);
   formData.append("key", key);
+  formData.append("file", file);
 
   fetch("/decrypt", {
     method: "POST",
     body: formData
   })
-  .then(res => res.json())
+  .then(response => response.json())
   .then(data => {
     if (data.error) {
-      alert("Gagal dekripsi: " + data.error);
+      alert("Error: " + data.error);
     } else {
-      document.getElementById("plaintext").value = data.plaintext || "";
+      document.getElementById("plaintext").value = data.plaintext;
     }
   })
-  .catch(error => {
-    alert("Terjadi kesalahan saat dekripsi: " + error);
-  });
+  .catch(err => alert("Terjadi kesalahan: " + err));
 }
 
 
