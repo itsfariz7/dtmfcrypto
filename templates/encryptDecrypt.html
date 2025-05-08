@@ -3,111 +3,272 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Form Enkripsi & Dekripsi</title>
+  <title>Form Enkripsi & Visualisasi Sinyal</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
   <script src="https://unpkg.com/wavesurfer.js"></script>
 </head>
-<body class="bg-black text-white min-h-screen">
+<body class="bg-black text-white flex flex-col min-h-screen">
 
   <!-- Navbar -->
-  <nav class="bg-black bg-opacity-90 p-4 fixed top-0 w-full z-10">
-    <div class="container mx-auto flex justify-between">
-      <div class="text-xl font-bold">Crypto DTMF</div>
+  <nav id="navbar" class="fixed top-0 left-0 w-full z-50 transition-all duration-300 ease-in-out bg-black bg-opacity-90">
+    <div class="container mx-auto flex justify-between items-center p-4">
+      <div class="flex items-center space-x-2">
+        <a href="#" class="text-xl font-bold text-white">Crypto DTMF</a>
+      </div>
+      <button id="menu-toggle" class="md:hidden text-white focus:outline-none">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M4 6h16M4 12h16M4 18h16"/>
+        </svg>
+      </button>
+      <ul id="nav-links" class="hidden md:flex space-x-6 text-white">
+        <li><a href="/" class="hover:text-gray-300">Home</a></li>
+        <li><a href="/about" class="hover:text-gray-300">About</a></li>
+        <li><a href="/encryptDecrypt" class="hover:text-gray-300">Encryption & Decryption</a></li>
+      </ul>
+    </div>
+
+    <!-- Mobile Menu -->
+    <div id="mobile-menu" class="hidden md:hidden bg-black bg-opacity-90 p-4">
+      <ul class="text-white">
+        <li class="border-b border-gray-600">
+          <a href="/" class="block py-2 hover:text-gray-300 text-center">Home</a>
+        </li>
+        <li class="border-b border-gray-600">
+          <a href="/about" class="block py-2 hover:text-gray-300 text-center">About</a>
+        </li>
+        <li class="border-b border-gray-600">
+          <a href="/encryptDecrypt" class="block py-2 hover:text-gray-300 text-center">Encrypt & Decrypt</a>
+        </li>
+      </ul>
     </div>
   </nav>
 
-  <main class="pt-24 px-4 max-w-4xl mx-auto">
-    <!-- Decryption Section -->
-    <section class="border border-white p-6 rounded-lg">
-      <h2 class="text-xl font-bold mb-4 text-center">Decryption</h2>
+  <!-- Main Content -->
+  <main class="flex-grow flex flex-col justify-between">
+    <div class="w-full max-w-4xl mx-auto mt-32 bg-transparent border border-white rounded-lg p-6 space-y-4 px-4">
+      <h2 class="text-xl font-bold mb-4 text-center text-white">Encryption & Decryption</h2>
 
-      <div class="space-y-4">
-        <!-- Upload file -->
+      <!-- Input Pesan -->
+      <div>
+        <label class="block font-medium text-white">Pesan:</label>
+        <textarea id="pesan" rows="3" class="w-full p-2 border border-white rounded bg-transparent text-white placeholder-white" placeholder="Masukkan pesan..."></textarea>
+      </div>
+
+      <!-- Input Kata Kunci -->
+      <div>
+        <label class="block font-medium text-white">Kata Kunci (maks 16 karakter):</label>
+        <input type="text" id="kunci" maxlength="16" class="w-full p-2 border border-white rounded bg-transparent text-white placeholder-white" placeholder="Masukkan kata kunci" />
+      </div>
+
+      <!-- Tombol Encrypt -->
+      <button onclick="encryptPesan()" class="w-full border border-white text-white py-2 rounded hover:bg-white hover:text-black transition">Encrypt</button>
+
+      <!-- Output -->
+      <div id="output" class="space-y-3">
         <div>
-          <label class="block mb-1">File Enkripsi (.wav):</label>
-          <input type="file" id="dec-audioFile" accept=".wav" class="w-full text-white bg-black border border-white rounded p-2">
-        </div>
-
-        <!-- Analyze button with loading -->
-        <div class="flex items-center space-x-4">
-          <button onclick="analyzeFile()" class="border border-white py-2 px-4 rounded hover:bg-white hover:text-black transition">Analyze</button>
-          <span id="loading" class="hidden animate-pulse text-yellow-400">Analyzing...</span>
-        </div>
-
-        <!-- Result fields auto-filled -->
-        <div>
-          <label class="block">Ciphertext:</label>
-          <input type="text" id="dec-ciphertext" readonly class="w-full bg-transparent border border-white rounded p-2">
+          <label class="block font-medium text-white">Ciphertext:</label>
+          <input type="text" id="ciphertext" readonly class="w-full p-2 border border-white rounded bg-transparent text-white" />
         </div>
         <div>
-          <label class="block">Kata Kunci:</label>
-          <input type="text" id="dec-key" readonly class="w-full bg-transparent border border-white rounded p-2">
-        </div>
-
-        <!-- Decrypt button -->
-        <button onclick="decryptPesan()" class="w-full border border-white text-white py-2 rounded hover:bg-white hover:text-black transition">Decrypt</button>
-
-        <!-- Plaintext result -->
-        <div>
-          <label class="block mt-4">Plaintext:</label>
-          <textarea id="plaintext" readonly class="w-full bg-transparent border border-white rounded p-2" rows="3"></textarea>
+          <label class="block font-medium text-white">Index ASCII:</label>
+          <input type="text" id="ascii" readonly class="w-full p-2 border border-white rounded bg-transparent text-white" />
         </div>
       </div>
-    </section>
+
+      <!-- File MP3 -->
+      <div>
+        <label class="block font-medium text-white">Pilih File MP3:</label>
+        <input type="file" id="audioFile" accept=".mp3" class="w-full text-white" onchange="loadAudio()" />
+      </div>
+
+      <!-- Tombol Generate -->
+      <button onclick="generateAndVisualize()" class="w-full border border-white text-white py-2 rounded hover:bg-white hover:text-black transition">Generate & Visualize</button>
+      <div id="dtmf-visual" class="w-full h-24 bg-gray-200 rounded my-2"></div>
+      <div id="carrier-visual" class="w-full h-24 bg-gray-200 rounded my-2"></div>
+      <div id="mixed-visual" class="w-full h-24 bg-gray-200 rounded my-2"></div>
+
+            <!-- Tombol Download -->
+      <div id="download-links" class="mt-4 space-y-2 text-center hidden">
+        <p class="text-white font-semibold">Unduh File Audio:</p>
+        <a id="download-dtmf" class="block text-blue-400 hover:underline" download>Download DTMF Only</a>
+        <a id="download-carrier" class="block text-blue-400 hover:underline" download>Download Carrier Only</a>
+        <a id="download-mixed" class="block text-blue-400 hover:underline" download>Download Mixed Audio</a>
+      </div>
+
+    </div>
+
+   <!-- Decryption Section -->
+<div class="w-full max-w-4xl mx-auto mt-10 bg-transparent border border-white rounded-lg p-6 space-y-4 px-4">
+  <h2 class="text-xl font-bold mb-4 text-center text-white">Decryption</h2>
+
+    <!-- File .wav Enkripsi -->
+    <div>
+      <label class="block font-medium text-white">File Enkripsi (.wav):</label>
+      <input type="file" id="dec-audioFile" accept=".wav" class="w-full text-white" />
+    </div>
+    
+  <!-- Input Ciphertext -->
+  <div>
+    <label class="block font-medium text-white">Ciphertext:</label>
+    <input type="text" id="dec-ciphertext" class="w-full p-2 border border-white rounded bg-transparent text-white placeholder-white" placeholder="Masukkan ciphertext..." />
+  </div>
+
+  <!-- Input Kata Kunci -->
+  <div>
+    <label class="block font-medium text-white">Kata Kunci:</label>
+    <input type="text" id="dec-key" class="w-full p-2 border border-white rounded bg-transparent text-white placeholder-white" placeholder="Masukkan kata kunci yang digunakan" />
+  </div>
+
+  <!-- Tombol Decrypt -->
+  <button onclick="decryptPesan()" class="w-full border border-white text-white py-2 rounded hover:bg-white hover:text-black transition">Decrypt</button>
+
+  <!-- Output -->
+  <div>
+    <label class="block font-medium text-white mt-4">Hasil Plaintext:</label>
+    <textarea id="plaintext" rows="3" readonly class="w-full p-2 border border-white rounded bg-transparent text-white" placeholder="Hasil dekripsi akan muncul di sini..."></textarea>
+  </div>
+</div>
+
+
   </main>
 
-  <script>
-    function analyzeFile() {
-      const fileInput = document.getElementById("dec-audioFile");
-      const file = fileInput.files[0];
-      if (!file) return alert("Harap pilih file terlebih dahulu.");
+  <!-- Footer -->
+  <footer class="bg-black text-white border-t text-center p-4">
+    <p>&copy; 2025 Sanjif. All rights reserved.</p>
+  </footer>
 
-      document.getElementById("loading").classList.remove("hidden");
+  <!-- ... semua bagian sebelumnya tetap, hanya bagian script di bawah ini diganti: -->
+<script>
+  window.addEventListener("scroll", function () {
+    const navbar = document.getElementById("navbar");
+    navbar.classList.toggle("navbar-scrolled", window.scrollY > 50);
+  });
 
-      const formData = new FormData();
-      formData.append("file", file);
+  const menuToggle = document.getElementById('menu-toggle');
+  const mobileMenu = document.getElementById('mobile-menu');
+  menuToggle.addEventListener('click', () => mobileMenu.classList.toggle('hidden'));
 
-      fetch("/analyze", {
-        method: "POST",
-        body: formData
-      })
-        .then(res => res.json())
-        .then(data => {
-          document.getElementById("loading").classList.add("hidden");
-          if (data.error) return alert("Error: " + data.error);
-          document.getElementById("dec-ciphertext").value = data.ciphertext;
-          document.getElementById("dec-key").value = data.key;
-        })
-        .catch(err => {
-          document.getElementById("loading").classList.add("hidden");
-          alert("Terjadi kesalahan: " + err);
-        });
-    }
+  function encryptPesan() {
+    const pesan = document.getElementById("pesan").value;
+    const kunci = document.getElementById("kunci").value;
 
-    function decryptPesan() {
-      const ciphertext = document.getElementById("dec-ciphertext").value;
-      const key = document.getElementById("dec-key").value;
-      const file = document.getElementById("dec-audioFile").files[0];
+    if (!pesan || !kunci) return alert("Harap isi pesan dan kunci terlebih dahulu.");
 
-      if (!ciphertext || !key || !file) return alert("Semua data harus tersedia.");
+    const formData = new FormData();
+    formData.append("message", pesan);
+    formData.append("key", kunci);
 
-      const formData = new FormData();
-      formData.append("ciphertext", ciphertext);
-      formData.append("key", key);
-      formData.append("file", file);
-
-      fetch("/decrypt", {
-        method: "POST",
-        body: formData
-      })
+    fetch("/encrypt", { method: "POST", body: formData })
       .then(res => res.json())
       .then(data => {
         if (data.error) return alert("Error: " + data.error);
-        document.getElementById("plaintext").value = data.plaintext;
+        document.getElementById("ciphertext").value = data.ciphertext;
+        document.getElementById("ascii").value = data.ascii;
       })
-      .catch(err => alert("Terjadi kesalahan: " + err));
+      .catch(error => alert("Terjadi kesalahan: " + error));
+  }
+
+  let wavesurferInstances = {};
+
+  function createWaveform(containerId, audioUrl) {
+    // Destroy jika sudah ada sebelumnya
+    if (wavesurferInstances[containerId]) {
+      wavesurferInstances[containerId].destroy();
     }
-  </script>
+
+    const wavesurfer = WaveSurfer.create({
+      container: `#${containerId}`,
+      waveColor: '#ccc',
+      progressColor: '#4ade80',
+      cursorColor: '#facc15',
+      barWidth: 2,
+      barGap: 1,
+      height: 80,
+      responsive: true
+    });
+
+    wavesurfer.load(audioUrl);
+    
+    // Saat siap, langsung mainkan
+    wavesurfer.on('ready', () => {
+      wavesurfer.play();
+    });
+
+    wavesurferInstances[containerId] = wavesurfer;
+  }
+
+  function generateAndVisualize() {
+  const pesan = document.getElementById("pesan").value;
+  const kunci = document.getElementById("kunci").value;
+  const file = document.getElementById("audioFile").files[0];
+
+  if (!pesan || !kunci || !file) {
+    alert("Harap isi pesan, kunci, dan pilih file audio.");
+    return;
+  }
+
+  const formData = new FormData();
+  formData.append("message", pesan);
+  formData.append("key", kunci);
+  formData.append("file", file);
+
+  fetch("/process", {
+    method: "POST",
+    body: formData
+  })
+  .then(response => response.json())
+  .then(data => {
+    if (data.error) {
+      alert("Error: " + data.error);
+    } else {
+      // Jangan ubah ciphertext dan ASCII
+      createWaveform("dtmf-visual", data.waveforms.dtmf);
+      createWaveform("carrier-visual", data.waveforms.carrier);
+      createWaveform("mixed-visual", data.waveforms.mixed);
+
+      document.getElementById("download-links").classList.remove("hidden");
+      document.getElementById("download-dtmf").href = data.downloads.dtmf;
+      document.getElementById("download-carrier").href = data.downloads.carrier;
+      document.getElementById("download-mixed").href = data.downloads.mixed;
+    }
+  })
+  .catch(err => alert("Terjadi kesalahan: " + err));
+}
+  function decryptPesan() {
+  const ciphertext = document.getElementById("dec-ciphertext").value;
+  const key = document.getElementById("dec-key").value;
+  const file = document.getElementById("dec-audioFile").files[0];
+
+  if (!ciphertext || !key || !file) {
+    alert("Harap lengkapi ciphertext, kunci, dan pilih file audio.");
+    return;
+  }
+
+  const formData = new FormData();
+  formData.append("ciphertext", ciphertext);
+  formData.append("key", key);
+  formData.append("file", file);
+
+  fetch("/decrypt", {
+    method: "POST",
+    body: formData
+  })
+  .then(response => response.json())
+  .then(data => {
+    if (data.error) {
+      alert("Error: " + data.error);
+    } else {
+      document.getElementById("plaintext").value = data.plaintext;
+    }
+  })
+  .catch(err => alert("Terjadi kesalahan: " + err));
+}
+
+
+</script>
+
+  
 </body>
 </html>
